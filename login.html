@@ -8,23 +8,53 @@
     * {
       margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    body {
+    html, body {
+      height: 100%;
       background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+      color: #fff;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      color: #fff;
-      padding: 2rem 1rem;
+      align-items: center;
+      overflow: hidden;
     }
-    .login-container {
-      background: rgba(0, 0, 0, 0.7);
-      padding: 2rem 3rem;
+    body {
+      padding: 0;
+    }
+    .container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: stretch;
+      width: 100vw;
+      height: 100vh;
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .login-container, .passport-container {
+      background: rgba(0, 0, 0, 0.75);
       border-radius: 15px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.8);
-      width: 350px;
-      max-width: 100%;
-      margin-right: 2rem;
+      padding: 2rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #ffda00 transparent;
+    }
+    .login-container {
+      flex: 1 1 350px;
+      max-width: 450px;
+    }
+    .passport-container {
+      flex: 2 1 700px;
+      max-width: 900px;
+      display: none; /* cachée au départ */
+      position: relative;
+    }
+    .passport-container.show {
+      display: flex;
     }
     h2 {
       margin-bottom: 1.5rem;
@@ -32,6 +62,7 @@
       font-weight: 700;
       letter-spacing: 2px;
       color: #ffda00;
+      font-size: 2rem;
     }
     label {
       display: block;
@@ -108,23 +139,6 @@
     }
 
     /* Passeport container */
-    .passport-container {
-      background: rgba(0,0,0,0.7);
-      padding: 2rem 2.5rem;
-      border-radius: 15px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.8);
-      width: 350px;
-      max-width: 100%;
-      color: #fff;
-      text-align: center;
-      position: relative;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      overflow: hidden;
-    }
-
-    /* Bonjour animation */
     #welcomeMsg {
       font-size: 2rem;
       font-weight: 700;
@@ -132,12 +146,14 @@
       margin-bottom: 2rem;
       opacity: 1;
       transition: opacity 1s ease;
+      text-align: center;
     }
 
     #userInfo {
       opacity: 0;
       transition: opacity 1s ease;
       margin-bottom: 1.5rem;
+      text-align: center;
     }
 
     #userInfo p {
@@ -147,9 +163,9 @@
 
     .passport-image {
       width: 100%;
-      max-width: 1414px;
+      max-width: 100%;
       height: auto;
-      max-height: 2000px;
+      max-height: 80vh;
       margin-bottom: 1rem;
       border-radius: 15px;
       filter: blur(8px);
@@ -158,13 +174,14 @@
     }
     .lock-overlay {
       position: absolute;
-      top: 50px;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translate(-50%, -50%);
       font-size: 5rem;
       color: rgba(255, 255, 255, 0.8);
       pointer-events: none;
       user-select: none;
+      z-index: 10;
     }
     .passport-unlocked .passport-image {
       filter: none;
@@ -188,7 +205,7 @@
       font-size: 1rem;
     }
     .nip-form button {
-      width: 110px;
+      width: 130px;
       padding: 0.7rem;
       border-radius: 8px;
       border: none;
@@ -216,6 +233,7 @@
       display: none;
       margin-top: 1rem;
       transition: background 0.3s ease;
+      align-self: center;
     }
     .download-btn:hover {
       background: #00994d;
@@ -228,6 +246,7 @@
       flex-direction: column;
       gap: 1rem;
       width: 100%;
+      max-width: 400px;
     }
     .action-buttons button {
       background: #007bff;
@@ -245,56 +264,89 @@
     .action-buttons button:hover {
       background: #0056b3;
     }
+
+    /* Scrollbar style */
+    .login-container::-webkit-scrollbar,
+    .passport-container::-webkit-scrollbar {
+      width: 8px;
+    }
+    .login-container::-webkit-scrollbar-thumb,
+    .passport-container::-webkit-scrollbar-thumb {
+      background-color: #ffda00;
+      border-radius: 4px;
+    }
+
+    /* Responsive mobile */
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1.5rem;
+      }
+      .login-container, .passport-container {
+        max-width: 100%;
+        flex: unset;
+        height: 60vh;
+      }
+      .passport-container {
+        max-height: 70vh;
+      }
+      .passport-image {
+        max-height: 50vh;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <div class="login-container">
-    <h2>Connexion</h2>
-    <div class="error-msg" id="errorMsg">Identifiant ou mot de passe incorrect.</div>
-    <form id="loginForm" onsubmit="return validateLogin(event)">
-      <label for="username">Identifiant</label>
-      <input type="text" id="username" name="username" placeholder="Ton identifiant" required />
+  <div class="container">
+    <div class="login-container">
+      <h2>Connexion</h2>
+      <div class="error-msg" id="errorMsg">Identifiant ou mot de passe incorrect.</div>
+      <form id="loginForm" onsubmit="return validateLogin(event)">
+        <label for="username">Identifiant</label>
+        <input type="text" id="username" name="username" placeholder="Ton identifiant" required />
 
-      <label for="password">Mot de passe</label>
-      <input type="password" id="password" name="password" placeholder="Ton mot de passe" required />
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" placeholder="Ton mot de passe" required />
 
-      <label class="remember-label">
-        <input type="checkbox" id="rememberMe" />
-        Se souvenir de moi
-      </label>
+        <label class="remember-label">
+          <input type="checkbox" id="rememberMe" />
+          Se souvenir de moi
+        </label>
 
-      <button type="submit" class="btn">Se connecter</button>
-    </form>
-    <div class="back-link">
-      <a href="index.html">&larr; Retour au site</a>
-    </div>
-  </div>
-
-  <div class="passport-container" id="passportSection">
-
-    <div id="welcomeMsg"></div>
-
-    <div id="userInfo">
-      <p id="fullname"></p>
-      <p id="dob"></p>
+        <button type="submit" class="btn">Se connecter</button>
+      </form>
+      <div class="back-link">
+        <a href="index.html">&larr; Retour au site</a>
+      </div>
     </div>
 
-    <div style="position: relative;">
-      <img src="pass.png" alt="Passeport" class="passport-image" id="passportImg" />
-      <div class="lock-overlay" id="lockOverlay">🔒</div>
-    </div>
+    <div class="passport-container" id="passportSection">
 
-    <form id="nipForm" class="nip-form" onsubmit="return validateNIP(event)">
-      <input type="number" id="nipInput" placeholder="Entre ton NIP" required />
-      <button type="submit">Déverrouiller</button>
-    </form>
+      <div id="welcomeMsg"></div>
 
-    <button class="download-btn" id="downloadBtn" onclick="downloadPassport()">Télécharger PDF</button>
+      <div id="userInfo">
+        <p id="fullname"></p>
+        <p id="dob"></p>
+      </div>
 
-    <div class="action-buttons">
-      <button onclick="demanderNouveauPasseport()">Demander un nouveau passeport</button>
-      <button onclick="changerInformation()">Changer une information</button>
+      <div style="position: relative; width: 100%;">
+        <img src="pass.png" alt="Passeport" class="passport-image" id="passportImg" />
+        <div class="lock-overlay" id="lockOverlay">🔒</div>
+      </div>
+
+      <form id="nipForm" class="nip-form" onsubmit="return validateNIP(event)">
+        <input type="number" id="nipInput" placeholder="Entre ton NIP" required />
+        <button type="submit">Déverrouiller</button>
+      </form>
+
+      <button class="download-btn" id="downloadBtn" onclick="downloadPassport()">Télécharger PDF</button>
+
+      <div class="action-buttons">
+        <button onclick="demanderNouveauPasseport()">Demander un nouveau passeport</button>
+        <button onclick="changerInformation()">Changer une information</button>
+      </div>
     </div>
   </div>
 
@@ -321,7 +373,6 @@
   let currentUser = null;
 
   window.onload = () => {
-    // Check session first for auto-login
     const sessionUser = localStorage.getItem('sessionUser');
     const sessionPass = localStorage.getItem('sessionPass');
 
@@ -331,14 +382,12 @@
         currentUser = foundUser;
         document.querySelector('.login-container').style.display = 'none';
         const passportSection = document.getElementById('passportSection');
-        passportSection.style.display = 'flex';
-        passportSection.style.flexDirection = 'column';
+        passportSection.classList.add('show');
         showWelcomeMessage(foundUser.username, foundUser.fullname, foundUser.dob);
         return;
       }
     }
 
-    // Sinon préremplis username si rememberedUser existe
     const rememberedUser = localStorage.getItem('rememberedUser');
     if (rememberedUser) {
       document.getElementById('username').value = rememberedUser;
@@ -371,8 +420,7 @@
 
       document.querySelector('.login-container').style.display = 'none';
       const passportSection = document.getElementById('passportSection');
-      passportSection.style.display = 'flex';
-      passportSection.style.flexDirection = 'column';
+      passportSection.classList.add('show');
 
       showWelcomeMessage(foundUser.username, foundUser.fullname, foundUser.dob);
     } else {
