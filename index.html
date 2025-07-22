@@ -1,125 +1,267 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gouv Quénada - Le Site Officiel</title>
-  <style>
-    /* Styles comme avant, raccourcis pour éviter de répéter */
-    * {margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
-    body {
-      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-      color: #fff; overflow-x:hidden; scroll-behavior: smooth;
-    }
-    header {
-      position: sticky; top: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
-      padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
-      z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.4);
-    }
-    header h1 { font-weight: 900; letter-spacing: 3px; font-size: 1.5rem; cursor: default;}
-    nav a {
-      color: #fff; text-decoration:none; margin-left: 2rem; font-weight:600; transition: color 0.3s;
-    }
-    nav a:hover { color: #ffda00;}
-    main { max-width: 900px; margin: 3rem auto 5rem auto; padding: 0 1rem;}
-    section { margin-bottom: 5rem;}
-    section h2 {
-      font-size: 2.5rem; margin-bottom: 1rem; border-bottom: 3px solid #ffda00;
-      display: inline-block; padding-bottom: 0.3rem;
-    }
-    p {
-      font-size: 1.2rem; line-height: 1.6; color: #ddd; margin-bottom: 1.5rem;
-    }
-    .btn {
-      background: #ffda00; color: #000; font-weight: 700;
-      padding: 0.8rem 1.5rem; border-radius: 30px; cursor: pointer;
-      border: none; box-shadow: 0 5px 15px rgba(255, 218, 0, 0.5);
-      transition: all 0.3s ease; font-size: 1.1rem;
-    }
-    .btn:hover {
-      background: #f0c200; box-shadow: 0 8px 20px rgba(240, 194, 0, 0.8);
-      transform: translateY(-3px);
-    }
-    .flag-container {
-      text-align: center; margin-top: 3rem;
-    }
-    .flag-container img {
-      width: 150px; border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.6); margin-bottom: 1rem;
-    }
-    .flag-container p {
-      font-style: italic; color: #eee; font-size: 1rem;
-    }
-    .fade-in {
-      opacity: 0; transform: translateY(20px);
-      animation-fill-mode: forwards; animation-name: fadeInUp; animation-duration: 1s;
-    }
-    .fade-in.delay-1 { animation-delay: 0.3s;}
-    .fade-in.delay-2 { animation-delay: 0.6s;}
-    .fade-in.delay-3 { animation-delay: 0.9s;}
-    @keyframes fadeInUp {
-      to { opacity: 1; transform: translateY(0);}
-    }
-    footer {
-      text-align: center; padding: 2rem 1rem; color: #ccc;
-      font-size: 0.9rem; border-top: 1px solid rgba(255,255,255,0.2);
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gouvernement du Quénada</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Playfair+Display&family=Indie+Flower&family=Anton&family=Pacifico&family=Noto+Sans+SC&family=Amiri&family=Alef&family=Noto+Sans+JP&family=Noto+Sans+VN&family=Noto+Sans+KR&family=Noto+Sans+Thai&family=Noto+Sans+Devanagari&family=Noto+Sans+Georgian&family=Noto+Sans+Armenian&family=Noto+Sans+Arabic&display=swap" rel="stylesheet" />
+
+<style>
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: #f0f0f0;
+    color: #222;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+  body.dark {
+    background: #121212;
+    color: #eee;
+  }
+  header, section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  header {
+    height: 100vh;
+    padding: 0 1rem;
+  }
+  h1 {
+    font-size: 3em;
+    margin: 0;
+    transition: font-family 0.5s ease, color 0.5s ease;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    user-select: none;
+  }
+  #flag {
+    width: 150px;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    border-radius: 8px;
+  }
+  #footer-text {
+    color: #999;
+    font-size: 0.9em;
+    margin-top: 2rem;
+    user-select: none;
+    transition: color 0.5s ease;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.05);
+  }
+  #toggle-theme {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: 2px solid currentColor;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    user-select: none;
+  }
+  #toggle-theme:hover {
+    background-color: currentColor;
+    color: #121212;
+  }
+  body.dark #toggle-theme:hover {
+    color: #eee;
+  }
+  #start-button {
+    margin-top: 3rem;
+    padding: 0.9rem 2.5rem;
+    font-size: 1.3rem;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #222;
+    border: 2px solid #222;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    user-select: none;
+  }
+  #start-button:hover {
+    background-color: #222;
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  }
+  body.dark #start-button {
+    background-color: #222;
+    color: #eee;
+    border: 2px solid #eee;
+  }
+  body.dark #start-button:hover {
+    background-color: #eee;
+    color: #222;
+  }
+  #language-section {
+    min-height: 100vh;
+    padding: 3rem 1rem;
+    background-color: #ddd;
+    color: #222;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+  body.dark #language-section {
+    background-color: #1e1e1e;
+    color: #eee;
+  }
+  #language-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+  #language-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+  .lang-btn {
+    background-color: #fff;
+    border: 2px solid #222;
+    border-radius: 10px;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  }
+  .lang-btn:hover {
+    background-color: #222;
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+  body.dark .lang-btn {
+    background-color: #222;
+    border-color: #eee;
+    color: #eee;
+  }
+  body.dark .lang-btn:hover {
+    background-color: #eee;
+    color: #222;
+  }
+</style>
 </head>
 <body>
 
-  <header>
-    <h1>Gouv Quénada</h1>
-    <nav>
-      <a href="#accueil">Accueil</a>
-      <a href="#actualites">Actualités</a>
-      <a href="#documents">Documents</a>
-      <a href="#histoire">Histoire</a>
-      <a href="#voyage">Voyage</a>
-      <a href="login.html" style="margin-left:3rem; font-weight:700; color:#ffda00;">Connexion</a>
-    </nav>
-  </header>
+<button id="toggle-theme" aria-label="Changer le thème">🌙</button>
 
-  <main>
-    <section id="accueil" class="fade-in delay-1">
-      <h2>Bienvenue</h2>
-      <p>Explore ton gouvernement, découvre l'histoire, et reste informé sur tout ce qui touche le Quénada.</p>
-      <button class="btn" onclick="alert('Bienvenue sur le site officiel du Quénada!')">Découvrir</button>
+<header>
+  <img src="flag_que.png" id="flag" alt="Drapeau du Quénada">
+  <h1 id="animated-title"></h1>
+  <div id="footer-text">Gouvernement du Quénada</div>
+  <button id="start-button">Commencer</button>
+</header>
 
-      <div class="flag-container">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Canada.svg" alt="Drapeau du Quénada" />
-        <p>Le drapeau du Quénada, symbole d’unité, de paix et de diversité.</p>
-      </div>
-    </section>
+<section id="language-section">
+  <h2>Choisir ta langue</h2>
+  <div id="language-list">
+    <button class="lang-btn">English</button>
+    <button class="lang-btn">Français</button>
+    <button class="lang-btn">ebabi</button>
+  </div>
+</section>
 
-    <section id="actualites" class="fade-in delay-2">
-      <h2>Actualités</h2>
-      <p>Les dernières nouvelles qui impactent la vie de tous les jours au Quénada.</p>
-      <button class="btn" onclick="alert('Actualités à venir! Reste branché.')">Voir les actualités</button>
-    </section>
+<script>
+const latinTitles = [
+  "Government of Quénada",
+  "Gobierno de Quénada",
+  "Gouvernement du Quénada",
+  "Coscuß Cuénada",
+];
+const nonLatinTitles = [
+  "魁纳达政府",
+  "حكومة كوينادا",
+  "ממשלת קואנאדה",
+  "クエナダ政府",
+  "Κυβέρνηση του Κουέναδα"
+];
+const maxLen = Math.max(latinTitles.length, nonLatinTitles.length);
+const titles = [];
+for (let i = 0; i < maxLen; i++) {
+  if (latinTitles[i]) titles.push({text: latinTitles[i]});
+  if (nonLatinTitles[i]) titles.push({text: nonLatinTitles[i]});
+}
 
-    <section id="documents" class="fade-in delay-3">
-      <h2>Documents officiels</h2>
-      <p>Accède facilement aux documents importants comme ta carte d’identité, passeport, permis de conduire, et plus.</p>
-      <button class="btn" onclick="alert('Section documents bientôt dispo!')">Explorer</button>
-    </section>
+const fonts = [
+  "Roboto, sans-serif",
+  "Playfair Display, serif",
+  "Indie Flower, cursive",
+  "Anton, sans-serif",
+  "Pacifico, cursive",
+  "Noto Sans SC, sans-serif",
+  "Amiri, serif",
+  "Alef, sans-serif",
+  "Noto Sans JP, sans-serif",
+  "Noto Sans VN, sans-serif",
+  "Noto Sans Georgian, sans-serif",
+  "Noto Sans Arabic, sans-serif"
+];
 
-    <section id="histoire" class="fade-in delay-3">
-      <h2>Histoire</h2>
-      <p>Découvre le passé du Quénada, ses luttes, et ses héros.</p>
-      <button class="btn" onclick="alert('Section histoire en préparation!')">Découvrir</button>
-    </section>
+const titleElement = document.getElementById("animated-title");
+let titleIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
+let lastFont = null;
 
-    <section id="voyage" class="fade-in delay-3">
-      <h2>Voyage & Sécurité</h2>
-      <p>Planifie tes voyages avec des conseils sur la sécurité et les règles partout dans le monde.</p>
-      <button class="btn" onclick="alert('Section voyage bientôt en ligne!')">Voyager safe</button>
-    </section>
-  </main>
+function getRandomFont() {
+  let font;
+  do {
+    font = fonts[Math.floor(Math.random() * fonts.length)];
+  } while (font === lastFont);
+  lastFont = font;
+  return font;
+}
 
-  <footer>
-    © 2025 Gouvernement du Quénada - Fait avec ❤️ pour tout le monde
-  </footer>
+function type() {
+  const current = titles[titleIndex];
+  if (charIndex === 0 && !isDeleting) {
+    titleElement.style.fontFamily = getRandomFont();
+  }
+  if (isDeleting) {
+    titleElement.textContent = current.text.substring(0, charIndex--);
+  } else {
+    titleElement.textContent = current.text.substring(0, charIndex++);
+  }
+  if (!isDeleting && charIndex === current.text.length) {
+    setTimeout(() => isDeleting = true, 3000);
+  } else if (isDeleting && charIndex === 0) {
+    isDeleting = false;
+    titleIndex = (titleIndex + 1) % titles.length;
+  }
+  setTimeout(type, isDeleting ? 50 : 100);
+}
+type();
+
+const toggleBtn = document.getElementById("toggle-theme");
+toggleBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  toggleBtn.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+});
+
+let scrolled = false;
+window.addEventListener("wheel", (e) => {
+  if (!scrolled && e.deltaY > 20) {
+    scrolled = true;
+    document.getElementById("language-section").scrollIntoView({behavior: "smooth"});
+  }
+}, {passive: true});
+window.addEventListener("keydown", (e) => {
+  if (!scrolled && (e.key === "ArrowDown" || e.key === "PageDown")) {
+    scrolled = true;
+    document.getElementById("language-section").scrollIntoView({behavior: "smooth"});
+  }
+});
+document.getElementById("start-button").addEventListener("click", () => {
+  document.getElementById("language-section").scrollIntoView({behavior: "smooth"});
+});
+</script>
 
 </body>
 </html>
