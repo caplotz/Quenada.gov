@@ -135,8 +135,10 @@
     }
 
     .passport-image {
-      width: 300px;
-      height: 200px;
+      width: 100%;
+      max-width: 1414px;
+      height: auto;
+      max-height: 2000px;
       margin-bottom: 1rem;
       border-radius: 15px;
       filter: blur(8px);
@@ -314,13 +316,11 @@
       errorMsg.style.display = 'none';
       currentUser = foundUser;
 
-      // Hide login, show passport section
       document.querySelector('.login-container').style.display = 'none';
       const passportSection = document.getElementById('passportSection');
       passportSection.style.display = 'flex';
       passportSection.style.flexDirection = 'column';
 
-      // Affiche le message de bienvenue puis animation
       showWelcomeMessage(foundUser.username, foundUser.fullname, foundUser.dob);
     } else {
       errorMsg.style.display = 'block';
@@ -338,11 +338,8 @@
     welcomeMsg.style.opacity = 1;
     welcomeMsg.textContent = `Bonjour, ${username}.`;
 
-    // Après 2 secondes, fade out welcomeMsg, fade in userInfo + autres éléments
     setTimeout(() => {
       welcomeMsg.style.opacity = 0;
-
-      // Après fade out (1s), affiche infos
       setTimeout(() => {
         fullnameElem.textContent = `Nom complet : ${fullname}`;
         dobElem.textContent = `Date de naissance : ${dob}`;
@@ -350,7 +347,6 @@
       }, 1000);
     }, 2000);
 
-    // Reset passport état
     resetPassportView();
   }
 
