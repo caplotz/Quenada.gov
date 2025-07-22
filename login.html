@@ -321,6 +321,24 @@
   let currentUser = null;
 
   window.onload = () => {
+    // Check session first for auto-login
+    const sessionUser = localStorage.getItem('sessionUser');
+    const sessionPass = localStorage.getItem('sessionPass');
+
+    if (sessionUser && sessionPass) {
+      const foundUser = usersDB.find(u => u.username === sessionUser && u.password === sessionPass);
+      if(foundUser) {
+        currentUser = foundUser;
+        document.querySelector('.login-container').style.display = 'none';
+        const passportSection = document.getElementById('passportSection');
+        passportSection.style.display = 'flex';
+        passportSection.style.flexDirection = 'column';
+        showWelcomeMessage(foundUser.username, foundUser.fullname, foundUser.dob);
+        return;
+      }
+    }
+
+    // Sinon préremplis username si rememberedUser existe
     const rememberedUser = localStorage.getItem('rememberedUser');
     if (rememberedUser) {
       document.getElementById('username').value = rememberedUser;
@@ -343,8 +361,12 @@
 
       if (remember) {
         localStorage.setItem('rememberedUser', user);
+        localStorage.setItem('sessionUser', user);
+        localStorage.setItem('sessionPass', pass);
       } else {
         localStorage.removeItem('rememberedUser');
+        localStorage.removeItem('sessionUser');
+        localStorage.removeItem('sessionPass');
       }
 
       document.querySelector('.login-container').style.display = 'none';
