@@ -1,554 +1,266 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Connexion - Gouv Quénada</title>
-  <style>
-    * {
-      margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    html, body {
-      height: 100%;
-      background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
-    body {
-      padding: 0;
-    }
-    .container {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: stretch;
-      width: 100vw;
-      height: 100vh;
-      gap: 1rem;
-      padding: 1rem;
-    }
-    .login-container, .passport-container {
-      background: rgba(0, 0, 0, 0.75);
-      border-radius: 15px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.8);
-      padding: 2rem 2.5rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: #ffda00 transparent;
-    }
-    .login-container {
-      flex: 1 1 350px;
-      max-width: 450px;
-    }
-    .passport-container {
-      flex: 2 1 700px;
-      max-width: 900px;
-      display: none; /* cachée au départ */
-      position: relative;
-    }
-    .passport-container.show {
-      display: flex;
-    }
-    h2 {
-      margin-bottom: 1.5rem;
-      text-align: center;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: #ffda00;
-      font-size: 2rem;
-    }
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-      font-size: 1rem;
-    }
-    input[type="text"],
-    input[type="password"],
-    input[type="number"] {
-      width: 100%;
-      padding: 0.7rem;
-      margin-bottom: 1.5rem;
-      border-radius: 8px;
-      border: none;
-      font-size: 1rem;
-    }
-    input[type="text"]:focus,
-    input[type="password"]:focus,
-    input[type="number"]:focus {
-      outline: none;
-      box-shadow: 0 0 8px #ffda00;
-    }
-    .btn {
-      width: 100%;
-      background: #ffda00;
-      color: #000;
-      font-weight: 700;
-      padding: 0.8rem;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      box-shadow: 0 5px 15px rgba(255, 218, 0, 0.5);
-      transition: all 0.3s ease;
-    }
-    .btn:hover {
-      background: #f0c200;
-      box-shadow: 0 8px 20px rgba(240, 194, 0, 0.8);
-      transform: translateY(-3px);
-    }
-    .error-msg {
-      background: #ff3b3b;
-      color: #fff;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      display: none;
-      text-align: center;
-      font-weight: 700;
-    }
-    .back-link {
-      margin-top: 1rem;
-      text-align: center;
-    }
-    .back-link a {
-      color: #ffda00;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .back-link a:hover {
-      text-decoration: underline;
-    }
-    label.remember-label {
-      font-weight: 500;
-      font-size: 0.9rem;
-      user-select: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 1.5rem;
-      color: #ffda00;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gouvernement du Quénada</title>
 
-    /* Passeport container */
-    #welcomeMsg {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #ffda00;
-      margin-bottom: 2rem;
-      opacity: 1;
-      transition: opacity 1s ease;
-      text-align: center;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Playfair+Display&family=Indie+Flower&family=Anton&family=Pacifico&family=Noto+Sans+SC&family=Amiri&family=Alef&family=Noto+Sans+JP&family=Noto+Sans+VN&family=Noto+Sans+KR&family=Noto+Sans+Thai&family=Noto+Sans+Devanagari&family=Noto+Sans+Georgian&family=Noto+Sans+Armenian&family=Noto+Sans+Arabic&display=swap" rel="stylesheet" />
 
-    #userInfo {
-      opacity: 0;
-      transition: opacity 1s ease;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-
-    #userInfo p {
-      margin: 0.2rem 0;
-      font-size: 1.2rem;
-    }
-
-    .passport-image {
-      width: 100%;
-      max-width: 100%;
-      height: auto;
-      max-height: 80vh;
-      margin-bottom: 1rem;
-      border-radius: 15px;
-      filter: blur(8px);
-      transition: filter 0.5s ease;
-      position: relative;
-    }
-    .lock-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 5rem;
-      color: rgba(255, 255, 255, 0.8);
-      pointer-events: none;
-      user-select: none;
-      z-index: 10;
-    }
-    .passport-unlocked .passport-image {
-      filter: none;
-    }
-    .passport-unlocked .lock-overlay {
-      display: none;
-    }
-
-    .nip-form {
-      margin-bottom: 1rem;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
-    .nip-form input {
-      flex: 1;
-      padding: 0.7rem;
-      border-radius: 8px;
-      border: none;
-      font-size: 1rem;
-    }
-    .nip-form button {
-      width: 130px;
-      padding: 0.7rem;
-      border-radius: 8px;
-      border: none;
-      background: #ffda00;
-      color: #000;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-    }
-    .nip-form button:hover {
-      background: #f0c200;
-    }
-
-    .download-btn {
-      background: #00cc66;
-      color: #fff;
-      padding: 0.8rem 2rem;
-      border: none;
-      border-radius: 30px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 1.1rem;
-      box-shadow: 0 5px 15px rgba(0, 204, 102, 0.7);
-      display: none;
-      margin-top: 1rem;
-      transition: background 0.3s ease;
-      align-self: center;
-    }
-    .download-btn:hover {
-      background: #00994d;
-    }
-
-    /* Buttons below passport */
-    .action-buttons {
-      margin-top: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      width: 100%;
-      max-width: 400px;
-    }
-    .action-buttons button {
-      background: #007bff;
-      border: none;
-      padding: 0.9rem 1rem;
-      border-radius: 30px;
-      font-weight: 700;
-      cursor: pointer;
-      color: white;
-      font-size: 1.1rem;
-      box-shadow: 0 5px 15px rgba(0,123,255,0.5);
-      transition: background 0.3s ease;
-      width: 100%;
-    }
-    .action-buttons button:hover {
-      background: #0056b3;
-    }
-
-    /* Scrollbar style */
-    .login-container::-webkit-scrollbar,
-    .passport-container::-webkit-scrollbar {
-      width: 8px;
-    }
-    .login-container::-webkit-scrollbar-thumb,
-    .passport-container::-webkit-scrollbar-thumb {
-      background-color: #ffda00;
-      border-radius: 4px;
-    }
-
-    /* Responsive mobile */
-    @media (max-width: 900px) {
-      .container {
-        flex-direction: column;
-        padding: 1rem;
-        gap: 1.5rem;
-      }
-      .login-container, .passport-container {
-        max-width: 100%;
-        flex: unset;
-        height: 60vh;
-      }
-      .passport-container {
-        max-height: 70vh;
-      }
-      .passport-image {
-        max-height: 50vh;
-      }
-    }
-  </style>
+<style>
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: #f0f0f0;
+    color: #222;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+  body.dark {
+    background: #121212;
+    color: #eee;
+  }
+  header, section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  header {
+    height: 100vh;
+    padding: 0 1rem;
+  }
+  h1 {
+    font-size: 3em;
+    margin: 0;
+    transition: font-family 0.5s ease, color 0.5s ease;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    user-select: none;
+  }
+  #flag {
+    width: 150px;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    border-radius: 8px;
+  }
+  #footer-text {
+    color: #999;
+    font-size: 0.9em;
+    margin-top: 2rem;
+    user-select: none;
+    transition: color 0.5s ease;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.05);
+  }
+  #toggle-theme {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: 2px solid currentColor;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    user-select: none;
+  }
+  #toggle-theme:hover {
+    background-color: currentColor;
+    color: #121212;
+  }
+  body.dark #toggle-theme:hover {
+    color: #eee;
+  }
+  #start-button {
+    margin-top: 3rem;
+    padding: 0.9rem 2.5rem;
+    font-size: 1.3rem;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #222;
+    border: 2px solid #222;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    user-select: none;
+  }
+  #start-button:hover {
+    background-color: #222;
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  }
+  body.dark #start-button {
+    background-color: #222;
+    color: #eee;
+    border: 2px solid #eee;
+  }
+  body.dark #start-button:hover {
+    background-color: #eee;
+    color: #222;
+  }
+  #language-section {
+    min-height: 100vh;
+    padding: 3rem 1rem;
+    background-color: #ddd;
+    color: #222;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+  body.dark #language-section {
+    background-color: #1e1e1e;
+    color: #eee;
+  }
+  #language-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+  #language-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+  .lang-btn {
+    background-color: #fff;
+    border: 2px solid #222;
+    border-radius: 10px;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  }
+  .lang-btn:hover {
+    background-color: #222;
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+  body.dark .lang-btn {
+    background-color: #222;
+    border-color: #eee;
+    color: #eee;
+  }
+  body.dark .lang-btn:hover {
+    background-color: #eee;
+    color: #222;
+  }
+</style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="login-container">
-      <h2>Connexion</h2>
-      <div class="error-msg" id="errorMsg">Identifiant ou mot de passe incorrect.</div>
-      <form id="loginForm" onsubmit="return validateLogin(event)">
-        <label for="username">Identifiant</label>
-        <input type="text" id="username" name="username" placeholder="Ton identifiant" required />
+<button id="toggle-theme" aria-label="Changer le thème">🌙</button>
 
-        <label for="password">Mot de passe</label>
-        <input type="password" id="password" name="password" placeholder="Ton mot de passe" required />
+<header>
+  <img src="flag_que.png" id="flag" alt="Drapeau du Quénada">
+  <h1 id="animated-title"></h1>
+  <div id="footer-text">Gouvernement du Quénada</div>
+  <button id="start-button">Commencer</button>
+</header>
 
-        <label class="remember-label">
-          <input type="checkbox" id="rememberMe" />
-          Se souvenir de moi
-        </label>
-
-        <button type="submit" class="btn">Se connecter</button>
-      </form>
-      <div class="back-link">
-        <a href="index.html">&larr; Retour au site</a>
-      </div>
-    </div>
-
-    <div class="passport-container" id="passportSection">
-
-      <div id="welcomeMsg"></div>
-
-      <div id="userInfo">
-        <p id="fullname"></p>
-        <p id="dob"></p>
-      </div>
-
-      <div style="position: relative; width: 100%;">
-        <img src="pass.png" alt="Passeport" class="passport-image" id="passportImg" />
-        <div class="lock-overlay" id="lockOverlay">🔒</div>
-      </div>
-
-      <form id="nipForm" class="nip-form" onsubmit="return validateNIP(event)">
-        <input type="number" id="nipInput" placeholder="Entre ton NIP" required />
-        <button type="submit">Déverrouiller</button>
-      </form>
-
-      <button class="download-btn" id="downloadBtn" onclick="downloadPassport()">Télécharger PDF</button>
-
-      <div class="action-buttons">
-        <button onclick="demanderNouveauPasseport()">Demander un nouveau passeport</button>
-        <button onclick="changerInformation()">Changer une information</button>
-      </div>
-    </div>
+<section id="language-section">
+  <h2>Choisir ta langue</h2>
+  <div id="language-list">
+    <button class="lang-btn">English</button>
+    <button class="lang-btn">Français</button>
+    <button class="lang-btn">ebabi</button>
   </div>
+</section>
 
 <script>
-  const usersDB = [
-    {
-      username: 'roman',
-      password: 'bouchard14',
-      fullname: 'Roman Bouchard',
-      dob: '2011-07-19',
-      nip: '1234',
-      passportPDF: 'passport-roman.pdf'
-    },
-    {
-      username: 'marie',
-      password: 'lajoie22',
-      fullname: 'Marie Lajoie',
-      dob: '2005-11-02',
-      nip: '5678',
-      passportPDF: 'passport-marie.pdf'
-    }
-  ];
+const latinTitles = [
+  "Government of Quénada",
+  "Gobierno de Quénada",
+  "Gouvernement du Quénada",
+  "Coscuß Cuénada",
+];
+const nonLatinTitles = [
+  "魁纳达政府",
+  "حكومة كوينادا",
+  "ממשלת קואנאדה",
+  "クエナダ政府",
+  "Κυβέρνηση του Κουέναδα"
+];
+const maxLen = Math.max(latinTitles.length, nonLatinTitles.length);
+const titles = [];
+for (let i = 0; i < maxLen; i++) {
+  if (latinTitles[i]) titles.push({text: latinTitles[i]});
+  if (nonLatinTitles[i]) titles.push({text: nonLatinTitles[i]});
+}
 
-  let currentUser = null;
+const fonts = [
+  "Roboto, sans-serif",
+  "Playfair Display, serif",
+  "Indie Flower, cursive",
+  "Anton, sans-serif",
+  "Pacifico, cursive",
+  "Noto Sans SC, sans-serif",
+  "Amiri, serif",
+  "Alef, sans-serif",
+  "Noto Sans JP, sans-serif",
+  "Noto Sans VN, sans-serif",
+  "Noto Sans Georgian, sans-serif",
+  "Noto Sans Arabic, sans-serif"
+];
 
-  window.onload = () => {
-    const sessionUser = localStorage.getItem('sessionUser');
-    const sessionPass = localStorage.getItem('sessionPass');
+const titleElement = document.getElementById("animated-title");
+let titleIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
+let lastFont = null;
 
-    if (sessionUser && sessionPass) {
-      const foundUser = usersDB.find(u => u.username === sessionUser && u.password === sessionPass);
-      if(foundUser) {
-        currentUser = foundUser;
-        document.querySelector('.login-container').style.display = 'none';
-        const passportSection = document.getElementById('passportSection');
-        passportSection.classList.add('show');
-        showWelcomeMessage(foundUser.username, foundUser.fullname, foundUser.dob);
-        return;
-      }
-    }
+function getRandomFont() {
+  let font;
+  do {
+    font = fonts[Math.floor(Math.random() * fonts.length)];
+  } while (font === lastFont);
+  lastFont = font;
+  return font;
+}
 
-    const rememberedUser = localStorage.getItem('rememberedUser');
-    if (rememberedUser) {
-      document.getElementById('username').value = rememberedUser;
-      document.getElementById('rememberMe').checked = true;
-    }
-  };
-
-  function validateLogin(e) {
-    e.preventDefault();
-    const user = document.getElementById('username').value.trim();
-    const pass = document.getElementById('password').value.trim();
-    const remember = document.getElementById('rememberMe').checked;
-    const errorMsg = document.getElementById('errorMsg');
-
-    const foundUser = usersDB.find(u => u.username === user && u.password === pass);
-
-    if(foundUser) {
-      errorMsg.style.display = 'none';
-      currentUser = foundUser;
-
-      if (remember) {
-        localStorage.setItem('rememberedUser', user);
-        localStorage.setItem('sessionUser', user);
-        localStorage.setItem('sessionPass', pass);
-      } else {
-        localStorage.removeItem('rememberedUser');
-        localStorage.removeItem('sessionUser');
-        localStorage.removeItem('sessionPass');
-      }
-
-      document.querySelector('.login-container').style.display = 'none';
-      const passportSection = document.getElementById('passportSection');
-      passportSection.classList.add('show');
-
-      showWelcomeMessage(foundUser.username, foundUser.fullname, foundUser.dob);
-    } else {
-      errorMsg.style.display = 'block';
-    }
-    return false;
+function type() {
+  const current = titles[titleIndex];
+  if (charIndex === 0 && !isDeleting) {
+    titleElement.style.fontFamily = getRandomFont();
   }
-
-  function showWelcomeMessage(username, fullname, dob) {
-    const welcomeMsg = document.getElementById('welcomeMsg');
-    const userInfo = document.getElementById('userInfo');
-    const fullnameElem = document.getElementById('fullname');
-    const dobElem = document.getElementById('dob');
-
-    userInfo.style.opacity = 0;
-    welcomeMsg.style.opacity = 1;
-    welcomeMsg.textContent = `Bonjour, ${username}.`;
-
-    setTimeout(() => {
-      welcomeMsg.style.opacity = 0;
-      setTimeout(() => {
-        fullnameElem.textContent = `Nom complet : ${fullname}`;
-        dobElem.textContent = `Date de naissance : ${dob}`;
-        userInfo.style.opacity = 1;
-      }, 1000);
-    }, 2000);
-
-    resetPassportView();
+  if (isDeleting) {
+    titleElement.textContent = current.text.substring(0, charIndex--);
+  } else {
+    titleElement.textContent = current.text.substring(0, charIndex++);
   }
-
-  function resetPassportView() {
-    const passportImg = document.getElementById('passportImg');
-    const lockOverlay = document.getElementById('lockOverlay');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const nipInput = document.getElementById('nipInput');
-
-    passportImg.classList.remove('passport-unlocked');
-    passportImg.style.filter = 'blur(8px)';
-    lockOverlay.style.display = 'block';
-    downloadBtn.style.display = 'none';
-    nipInput.value = '';
+  if (!isDeleting && charIndex === current.text.length) {
+    setTimeout(() => isDeleting = true, 3000);
+  } else if (isDeleting && charIndex === 0) {
+    isDeleting = false;
+    titleIndex = (titleIndex + 1) % titles.length;
   }
+  setTimeout(type, isDeleting ? 50 : 100);
+}
+type();
 
-  function validateNIP(e) {
-    e.preventDefault();
-    const nipInput = document.getElementById('nipInput');
-    const nipValue = nipInput.value.trim();
-    if(!currentUser) return;
+const toggleBtn = document.getElementById("toggle-theme");
+toggleBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  toggleBtn.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+});
 
-    if(nipValue === currentUser.nip) {
-      unlockPassport();
-    } else {
-      alert('NIP incorrect, essaie encore.');
-    }
-    return false;
+let scrolled = false;
+window.addEventListener("wheel", (e) => {
+  if (!scrolled && e.deltaY > 20) {
+    scrolled = true;
+    document.getElementById("language-section").scrollIntoView({behavior: "smooth"});
   }
-
-  function unlockPassport() {
-    const passportImg = document.getElementById('passportImg');
-    const lockOverlay = document.getElementById('lockOverlay');
-    const downloadBtn = document.getElementById('downloadBtn');
-
-    passportImg.style.filter = 'none';
-    lockOverlay.style.display = 'none';
-    downloadBtn.style.display = 'inline-block';
+}, {passive: true});
+window.addEventListener("keydown", (e) => {
+  if (!scrolled && (e.key === "ArrowDown" || e.key === "PageDown")) {
+    scrolled = true;
+    document.getElementById("language-section").scrollIntoView({behavior: "smooth"});
   }
-
-  function downloadPassport() {
-    const pdfName = currentUser.passportPDF;
-
-    const pdfContent = `
-      %PDF-1.4
-      1 0 obj
-      << /Type /Catalog /Pages 2 0 R >>
-      endobj
-      2 0 obj
-      << /Type /Pages /Kids [3 0 R] /Count 1 >>
-      endobj
-      3 0 obj
-      << /Type /Page /Parent 2 0 R /MediaBox [0 0 300 144] /Contents 4 0 R >>
-      endobj
-      4 0 obj
-      << /Length 44 >>
-      stream
-      BT
-      /F1 24 Tf
-      50 100 Td
-      (Passeport de ${currentUser.fullname}) Tj
-      ET
-      endstream
-      endobj
-      5 0 obj
-      << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
-      endobj
-      xref
-      0 6
-      0000000000 65535 f 
-      0000000010 00000 n 
-      0000000061 00000 n 
-      0000000116 00000 n 
-      0000000211 00000 n 
-      0000000323 00000 n 
-      trailer
-      << /Size 6 /Root 1 0 R >>
-      startxref
-      395
-      %%EOF
-    `;
-
-    const blob = new Blob([pdfContent], {type: 'application/pdf'});
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = pdfName;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
-
-  function demanderNouveauPasseport() {
-    alert('Fonction "Demander un nouveau passeport" à venir. Patience, c’est en construction.');
-  }
-
-  function changerInformation() {
-    alert('Fonction "Changer une information" à venir. On travaille dessus, reste à l’écoute.');
-  }
+});
+document.getElementById("start-button").addEventListener("click", () => {
+  document.getElementById("language-section").scrollIntoView({behavior: "smooth"});
+});
 </script>
 
 </body>
