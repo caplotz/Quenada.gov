@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Connexion - Gouv Quénada</title>
+  <style>
+    * {
+      margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+    }
+    .login-container {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 2rem 3rem;
+      border-radius: 15px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.8);
+      width: 320px;
+    }
+    h2 {
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #ffda00;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 0.7rem;
+      margin-bottom: 1.5rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+    }
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      box-shadow: 0 0 8px #ffda00;
+    }
+    .btn {
+      width: 100%;
+      background: #ffda00;
+      color: #000;
+      font-weight: 700;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      box-shadow: 0 5px 15px rgba(255, 218, 0, 0.5);
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      background: #f0c200;
+      box-shadow: 0 8px 20px rgba(240, 194, 0, 0.8);
+      transform: translateY(-3px);
+    }
+    .error-msg {
+      background: #ff3b3b;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: none;
+      text-align: center;
+      font-weight: 700;
+    }
+    .back-link {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .back-link a {
+      color: #ffda00;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h2>Connexion</h2>
+    <div class="error-msg" id="errorMsg">Identifiant ou mot de passe incorrect.</div>
+    <form id="loginForm" onsubmit="return validateLogin(event)">
+      <label for="username">Identifiant</label>
+      <input type="text" id="username" name="username" placeholder="Ton identifiant" required />
+      
+      <label for="password">Mot de passe</label>
+      <input type="password" id="password" name="password" placeholder="Ton mot de passe" required />
+      
+      <button type="submit" class="btn">Se connecter</button>
+    </form>
+    <div class="back-link">
+      <a href="index.html">&larr; Retour au site</a>
+    </div>
+  </div>
+
+  <script>
+    function validateLogin(e) {
+      e.preventDefault();
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      const errorMsg = document.getElementById('errorMsg');
+
+      // Exemple basique: user: admin pass: quénada123
+      if(user === 'admin' && pass === 'quénada123') {
+        alert('Connexion réussie! Bienvenue, admin.');
+        window.location.href = 'index.html'; // Redirige vers la page principale
+      } else {
+        errorMsg.style.display = 'block';
+      }
+      return false;
+    }
+  </script>
+
+</body>
+</html>
