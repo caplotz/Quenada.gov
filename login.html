@@ -95,6 +95,17 @@
     .back-link a:hover {
       text-decoration: underline;
     }
+    label.remember-label {
+      font-weight: 500;
+      font-size: 0.9rem;
+      user-select: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+      color: #ffda00;
+    }
 
     /* Passeport container */
     .passport-container {
@@ -248,6 +259,11 @@
       <label for="password">Mot de passe</label>
       <input type="password" id="password" name="password" placeholder="Ton mot de passe" required />
 
+      <label class="remember-label">
+        <input type="checkbox" id="rememberMe" />
+        Se souvenir de moi
+      </label>
+
       <button type="submit" class="btn">Se connecter</button>
     </form>
     <div class="back-link">
@@ -304,10 +320,19 @@
 
   let currentUser = null;
 
+  window.onload = () => {
+    const rememberedUser = localStorage.getItem('rememberedUser');
+    if (rememberedUser) {
+      document.getElementById('username').value = rememberedUser;
+      document.getElementById('rememberMe').checked = true;
+    }
+  };
+
   function validateLogin(e) {
     e.preventDefault();
     const user = document.getElementById('username').value.trim();
     const pass = document.getElementById('password').value.trim();
+    const remember = document.getElementById('rememberMe').checked;
     const errorMsg = document.getElementById('errorMsg');
 
     const foundUser = usersDB.find(u => u.username === user && u.password === pass);
@@ -315,6 +340,12 @@
     if(foundUser) {
       errorMsg.style.display = 'none';
       currentUser = foundUser;
+
+      if (remember) {
+        localStorage.setItem('rememberedUser', user);
+      } else {
+        localStorage.removeItem('rememberedUser');
+      }
 
       document.querySelector('.login-container').style.display = 'none';
       const passportSection = document.getElementById('passportSection');
